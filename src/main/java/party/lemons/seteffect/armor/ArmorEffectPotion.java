@@ -1,25 +1,22 @@
 package party.lemons.seteffect.armor;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
-import party.lemons.seteffect.handler.GeneralHelper;
-
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.potion.EffectInstance;
 /**
  * Created by Sam on 21/06/2018.
  */
-public class ArmorEffectPotion implements IArmorEffect
-{
-	private final PotionEffect effect;
+public class ArmorEffectPotion implements IArmorEffect {
+	private final EffectInstance effectInstance;
 
-	public ArmorEffectPotion(PotionEffect effect)
-	{
-		this.effect = effect;
+	public ArmorEffectPotion(EffectInstance instance){
+
+		this.effectInstance = instance;
 	}
 
 	@Override
-	public void apply(EntityLivingBase player)
+	public void apply(LivingEntity player)
 	{
-		player.addPotionEffect(GeneralHelper.clonePotionEffect(effect));
+		if (!player.level.isClientSide)
+		player.addEffect(effectInstance);
 	}
 }

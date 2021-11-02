@@ -1,0 +1,32 @@
+modLoader="javafml" #mandatory
+loaderVersion="[36,)"
+license="MIT"
+[[mods]]
+modId="seteffect"
+version="${file.jarVersion}"
+displayName="SetEffect"
+logoFile="examplemod.png" #optional
+credits="Full credit goes to Lemonszz, this is just a port of their original mod for 1.12.2 https://github.com/Lemonszz/SetEffect"
+authors="Witixin (Lemonszz)" #optional
+description='''
+This is a utility mod that allows you to set potion effects when using certain armor sets. It requires and is fully customisable with crafttweaker.
+Offers a more strict option to gate effects behind gamestages too.
+'''
+[[dependencies.seteffect]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.seteffect]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.seteffect]]
+    modId = "crafttweaker"
+    mandatory = true
+    versionRange="[7.1.2.451,]"
+    ordering="NONE"
+    side="BOTH"

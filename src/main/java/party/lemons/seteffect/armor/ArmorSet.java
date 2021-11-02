@@ -1,37 +1,34 @@
 package party.lemons.seteffect.armor;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.google.common.collect.ArrayListMultimap;
-import crafttweaker.api.item.IItemStack;
-import crafttweaker.api.minecraft.CraftTweakerMC;
-import crafttweaker.api.potions.IPotion;
-import crafttweaker.api.potions.IPotionEffect;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumParticleTypes;
-import party.lemons.seteffect.crt.NewSet;
-import party.lemons.seteffect.handler.GeneralHelper;
-import party.lemons.seteffect.handler.PlayerHandler;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
 import com.google.common.collect.Multimap;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.openzen.zencode.java.ZenCodeType;
+import party.lemons.seteffect.handler.PlayerHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Sam on 20/06/2018.
  */
-@ZenClass("seteffect.armor.ArmorSet")
+@ZenRegister
+@ZenCodeType.Name("mods.seteffect.ArmorSet")
 public class ArmorSet
 {
-	private final Multimap<EntityEquipmentSlot, ItemStack> armor;
+	private final Multimap<EquipmentSlotType, ItemStack> armor;
 
 	private final List<IArmorEffect> effects;
 	private final List<IArmorEffect> attackerEffects;
@@ -43,7 +40,6 @@ public class ArmorSet
 	public ArmorSet()
 	{
 	    this.armor = ArrayListMultimap.create();
-		//this.armor = new ArrayListMultimap<>();
 		this.effects = new ArrayList<>();
 		this.attackerEffects = new ArrayList<>();
 		this.requiredStages = new ArrayList<>();
@@ -51,24 +47,33 @@ public class ArmorSet
 		this.ignoreNBT = false;
 	}
 
-	@ZenMethod
-	public ArmorSet requireGamestage(String stage)
+	@ZenCodeType.Method
+	public ArmorSet requireGamestages(String... stages)
 	{
-		requiredStages.add(stage);
+		for (String s : stages){
+			requiredStages.add(s);
+		}
 		return this;
 	}
 
-	@ZenMethod
-	public ArmorSet register()
+	@ZenCodeType.Method
+	public static ArmorSet newSet()
 	{
-		NewSet.register(this);
-		return this;
+		return new ArmorSet();
 	}
 
-	@ZenMethod
+	@ZenCodeType.Method
+	public void register()
+	{
+		ArmorSets.addSet(this);
+		CraftTweakerAPI.logInfo("Registering an ArmorSet with name: " + this.getName());
+	}
+
+
+	@ZenCodeType.Method
 	public ArmorSet addParticle(String particleName, float minx, float miny, float minz, float maxx, float maxy, float maxz, float minxoffset, float minyoffset, float minzoffset, float maxxoffset, float maxyoffset, float maxzoffset, float minspeed, float maxspeed, int amount)
 	{
-		EnumParticleTypes type = EnumParticleTypes.getByName(particleName);
+		ParticleType type = ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(particleName));
 		if(type == null)
 			throw new NullPointerException("No such particle " + particleName);
 
@@ -78,127 +83,97 @@ public class ArmorSet
 		return this;
 	}
 
-	@ZenMethod
-    public ArmorSet addImmunity(IPotion potion)
+	@ZenCodeType.Method
+	public ArmorSet addParticleWithDefaultSpread(String particleName){
+			return addParticle(particleName, 1.0f, 1.0f, 1.0f, 3.0f, 3.0f, 3.0f, 0.2f, 0.2f, 0.2f, 0.6f, 0.6f, 0.6f, 5.0f, 5.0f, 1);
+	}
+
+	@ZenCodeType.Method
+    public ArmorSet addImmunity(Effect effect)
     {
-        return addEffect(new ArmorEffectImmune(CraftTweakerMC.getPotion(potion)));
+        return addEffect(new ArmorEffectImmune(effect));
     }
 
-	@ZenMethod
+    @ZenCodeType.Method
+	public static void dumpParticleNames(){
+		CraftTweakerAPI.logInfo("Dumping registered particle names:");
+		for (ParticleType t : ForgeRegistries.PARTICLE_TYPES.getValues()){
+			CraftTweakerAPI.logInfo(t.getRegistryName().toString());
+		}
+		CraftTweakerAPI.logInfo("Finished dumping registered particle names");
+	}
+
 	public ArmorSet addEffect(IArmorEffect effect)
 	{
 		effects.add(effect);
 		return this;
 	}
 
-	@ZenMethod
-	public ArmorSet addEffect(IPotionEffect effect)
+	@ZenCodeType.Method
+	public ArmorSet addEffect(EffectInstance effect)
 	{
-		effects.add(new ArmorEffectPotion(CraftTweakerMC.getPotionEffect(effect)));
+		effects.add(new ArmorEffectPotion(effect));
 		return this;
 	}
 
-	@ZenMethod
-	public ArmorSet addAttackerEffect(IPotionEffect effect)
+	@ZenCodeType.Method
+	public ArmorSet addAttackerEffect(EffectInstance effect)
 	{
-		attackerEffects.add(new ArmorEffectPotion(CraftTweakerMC.getPotionEffect(effect)));
+		attackerEffects.add(new ArmorEffectPotion(effect));
 		return this;
 	}
 
-	@ZenMethod
+	@ZenCodeType.Method
 	public ArmorSet addAttackerEffect(IArmorEffect effect)
 	{
 		attackerEffects.add(effect);
 		return this;
 	}
 
-	@ZenMethod
-	public ArmorSet withHead(IItemStack stack)
-	{
-		armor.put(EntityEquipmentSlot.HEAD, CraftTweakerMC.getItemStack(stack));
+	@ZenCodeType.Method
+	public ArmorSet inSlot(EquipmentSlotType slot, IItemStack stack){
+		armor.put(slot, stack.getInternal());
 		return this;
 	}
 
-	@ZenMethod
-	public ArmorSet withChest(IItemStack stack)
-	{
-		armor.put(EntityEquipmentSlot.CHEST, CraftTweakerMC.getItemStack(stack));
-		return this;
-	}
-
-	@ZenMethod
-	public ArmorSet withLegs(IItemStack stack)
-	{
-		armor.put(EntityEquipmentSlot.LEGS, CraftTweakerMC.getItemStack(stack));
-		return this;
-	}
-
-	@ZenMethod
-	public ArmorSet withFeet(IItemStack stack)
-	{
-		armor.put(EntityEquipmentSlot.FEET, CraftTweakerMC.getItemStack(stack));
-		return this;
-	}
-
-	@ZenMethod
-	public ArmorSet withMainhand(IItemStack stack)
-	{
-		armor.put(EntityEquipmentSlot.MAINHAND, CraftTweakerMC.getItemStack(stack));
-		return this;
-	}
-
-	@ZenMethod
-	public ArmorSet withOffhand(IItemStack stack)
-	{
-		armor.put(EntityEquipmentSlot.OFFHAND, CraftTweakerMC.getItemStack(stack));
-		return this;
-	}
-
-	@ZenMethod
-	public ArmorSet withPart(EntityEquipmentSlot slot, IItemStack stack)
-	{
-		armor.put(slot, CraftTweakerMC.getItemStack(stack));
-		return this;
-	}
-
-	@ZenMethod
+	@ZenCodeType.Method
 	public ArmorSet setName(String name)
 	{
 		this.name = name.replace(" ", "_");
 		return this;
 	}
 
-	@ZenMethod
+	@ZenCodeType.Method
 	public ArmorSet setStrict()
 	{
 		this.strict = true;
 		return this;
 	}
 
-	@ZenMethod
+	@ZenCodeType.Method
     public ArmorSet setIgnoreNBT()
     {
         this.ignoreNBT = true;
         return this;
     }
 
-	public boolean isPlayerWearing(EntityPlayer player)
+	public boolean isPlayerWearing(PlayerEntity player)
 	{
 		return isPlayerWearing(player, strict);
 	}
 
-	private boolean isPlayerWearing(EntityPlayer player, boolean strict)
+	private boolean isPlayerWearing(PlayerEntity player, boolean strict)
 	{
 		if(!PlayerHandler.hasGamestage(player, requiredStages))
 			return false;
 
-		for(EntityEquipmentSlot slot : armor.keySet())
+		for(EquipmentSlotType slot : armor.keySet())
 		{
 		    boolean match = false;
 
 		    for(ItemStack stack : armor.get(slot))
             {
-                ItemStack playerStack = player.getItemStackFromSlot(slot);
+                ItemStack playerStack = player.getItemBySlot(slot);
                 match = itemMatch(playerStack, stack, strict);
 
                 if(match)
@@ -231,26 +206,26 @@ public class ArmorSet
 		{
 			return false;
 		}
-		else if (playerStack.getTagCompound() == null && compareStack.getTagCompound() != null)
+		else if (playerStack.getTag() == null && compareStack.getTag() != null)
 		{
 			return false;
 		}
 		else
 		{
-			if((playerStack.getTagCompound() != null && compareStack != null) && !ignoreNBT)
+			if((playerStack.getTag() != null && compareStack != null) && !ignoreNBT)
 			{
-				NBTTagCompound playerTags = playerStack.getTagCompound();
-				NBTTagCompound compareTags = compareStack.getTagCompound();
+				CompoundNBT playerTags = playerStack.getTag();
+				CompoundNBT compareTags = compareStack.getTag();
 
-				if(compareTags == null || compareTags.getKeySet() == null)
+				if(compareTags == null || compareTags.getAllKeys() == null)
 					return false;
 
-				for(String tag : compareTags.getKeySet())
+				for(String tag : compareTags.getAllKeys())
 				{
-					if(playerTags.hasKey(tag))
+					if(playerTags.contains(tag))
 					{
-						NBTBase pTag = playerTags.getTag(tag);
-						NBTBase cTag = compareTags.getTag(tag);
+						CompoundNBT pTag = playerTags.getCompound(tag);
+						CompoundNBT cTag = compareTags.getCompound(tag);
 
 						if(!pTag.equals(cTag))
 							return false;
@@ -279,35 +254,36 @@ public class ArmorSet
 		{
 			return false;
 		}
-		else if (playerStack.getTagCompound() == null && compareStack.getTagCompound() != null)
+		else if (playerStack.getTag() == null && compareStack.getTag() != null)
 		{
 			return false;
 		}
 		else
 		{
-			return (playerStack.getTagCompound() == null || playerStack.getTagCompound().equals(compareStack.getTagCompound())) && playerStack.areCapsCompatible(compareStack);
+			return (playerStack.getTag() == null || playerStack.getTag().equals(compareStack.getTag())) && playerStack.areCapsCompatible(compareStack);
 		}
 	}
 
 	public void print()
 	{
-		for(EntityEquipmentSlot slot : armor.keySet())
+		for(EquipmentSlotType slot : armor.keySet())
 		{
 			System.out.println(slot + " - " + armor.get(slot));
 		}
 	}
 
-	public void applyEffects(EntityPlayer player)
+	public void applyEffects(PlayerEntity player)
 	{
-		effects.forEach(e -> e.apply(player));
+
+		effects.forEach(e ->e.apply(player));
 	}
 
-	public void applyAttackerEffect(EntityLivingBase livingBase)
+	public void applyAttackerEffect(LivingEntity livingBase)
 	{
 		attackerEffects.forEach(e -> e.apply(livingBase));
 	}
 
-	public Multimap<EntityEquipmentSlot, ItemStack> getArmor()
+	public Multimap<EquipmentSlotType, ItemStack> getArmor()
 	{
 		return armor;
 	}

@@ -1,23 +1,22 @@
 package party.lemons.seteffect.armor;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.Potion;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.potion.Effect;
 
 /**
  * Created by Sam on 22/10/2018.
  */
 public class ArmorEffectImmune implements IArmorEffect
 {
-    private final Potion immunePotion;
-
-    public ArmorEffectImmune(Potion potion)
+    Effect immuneEffect;
+    public ArmorEffectImmune(Effect effect)
     {
-        this.immunePotion = potion;
+        this.immuneEffect = effect;
     }
 
     @Override
-    public void apply(EntityLivingBase living)
+    public void apply(LivingEntity living)
     {
-        living.removePotionEffect(immunePotion);
+        if (!living.level.isClientSide)living.removeEffect(immuneEffect);
     }
 }
