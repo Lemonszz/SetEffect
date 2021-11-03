@@ -78,7 +78,6 @@ public class ArmorSet
 			throw new NullPointerException("No such particle " + particleName);
 
 		ArmorEffectParticle eff = new ArmorEffectParticle(type, minx, miny, minz, maxx, maxy, maxz, minxoffset, minyoffset, minzoffset, maxxoffset, maxyoffset, maxzoffset, minspeed, maxspeed, amount);
-
 		effects.add(eff);
 		return this;
 	}

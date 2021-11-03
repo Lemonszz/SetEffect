@@ -22,9 +22,8 @@ public class PlayerHandler
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if(event.phase != TickEvent.Phase.END  || event.player == null || !event.player.isAlive() || event.player.isSpectator())
+		if(event.phase != TickEvent.Phase.END  || event.player.level.isClientSide || event.player == null || !event.player.isAlive() || event.player.isSpectator())
 			return;
-
 		ticks++;
 		if(ticks % 5 == 0)
 		{

@@ -1,11 +1,9 @@
 package party.lemons.seteffect.armor;
 
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import party.lemons.seteffect.handler.GeneralHelper;
 
@@ -43,27 +41,24 @@ public class ArmorEffectParticle implements IArmorEffect
 	@Override
 	public void apply(LivingEntity player)
 	{
-		Random random = player.getRandom();
-		World world = player.level;
 
-		if(world.isClientSide){
+		ServerWorld level = (ServerWorld) player.level;
+		Random random = level.getRandom();
 			for(int i = 0; i < amount; i++)
 			{
 				float posX = GeneralHelper.randomRange(random, minx, maxx);
 				float posY = GeneralHelper.randomRange(random, miny, maxy);
 				float posZ = GeneralHelper.randomRange(random, minz, maxz);
-				if (type == null){
-					break;
-				}
 				float offsetX = GeneralHelper.randomRange(random, minxoffset, maxxoffset);
 				float offsetY = GeneralHelper.randomRange(random, minyoffset, maxyoffset);
 				float offsetZ = GeneralHelper.randomRange(random, minzoffset, maxzoffset);
 
 				float speed = GeneralHelper.randomRange(random, minspeed, maxspeed);
-				ClientWorld level = (ClientWorld) world;
-				level.addParticle((IParticleData) type, player.position().x() + random.nextFloat() - 0.5f,
-						player.position().y() + 0.5d + random.nextFloat() - 0.5f, player.position().z() + random.nextFloat() - 0.5f, 0, 0, 0);
-			}
+
+				for (ServerPlayerEntity playerEntity :  player.getServer().getPlayerList().getPlayers()){
+					level.sendParticles(playerEntity, (IParticleData) type, false, playerEntity.getX() + posX, playerEntity.getY() + posY, playerEntity.getZ() + posZ, 1, offsetX, offsetY, offsetZ, speed);
+				}
+
 
 		}
 
