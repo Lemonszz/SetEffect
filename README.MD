@@ -40,7 +40,7 @@ import mods.SetEffect.ArmorSet;
 
 ArmorSet.dumpParticleNames(); //Can be commented out after getting the right name for what you want.
 
-val iron_set = ArmorSet.newSet()
+val iron_set = new ArmorSet()
                .setName("example_set")
                .inSlot(<equipmentslottype:head>, <item:minecraft:iron_helmet>)
                .inSlot(<equipmentslottype:chest>, <item:minecraft:iron_chestplate>)
@@ -55,7 +55,7 @@ iron_set.register();
 
 //You can also chain the register to remove the need for a variable.
 
- ArmorSet.newSet().setName("iron_set")
+ new ArmorSet().setName("iron_set")
                 .inSlot(<equipmentslottype:head>, <item:minecraft:iron_helmet>)
                .inSlot(<equipmentslottype:chest>, <item:minecraft:iron_chestplate>)
                .inSlot(<equipmentslottype:legs>, <item:minecraft:iron_leggings>)

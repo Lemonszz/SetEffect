@@ -1,10 +1,5 @@
 package party.lemons.seteffect.handler;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nullable;
 import java.util.Random;
 
 /**

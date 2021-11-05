@@ -29,7 +29,6 @@ import java.util.List;
 public class ArmorSet
 {
 	private final Multimap<EquipmentSlotType, ItemStack> armor;
-
 	private final List<IArmorEffect> effects;
 	private final List<IArmorEffect> attackerEffects;
 
@@ -37,6 +36,7 @@ public class ArmorSet
 	private String name = "";
 	private boolean strict, ignoreNBT;
 
+	@ZenCodeType.Constructor
 	public ArmorSet()
 	{
 	    this.armor = ArrayListMultimap.create();
@@ -54,12 +54,6 @@ public class ArmorSet
 			requiredStages.add(s);
 		}
 		return this;
-	}
-
-	@ZenCodeType.Method
-	public static ArmorSet newSet()
-	{
-		return new ArmorSet();
 	}
 
 	@ZenCodeType.Method

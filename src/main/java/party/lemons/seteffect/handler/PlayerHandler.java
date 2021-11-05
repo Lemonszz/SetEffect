@@ -19,6 +19,7 @@ public class PlayerHandler
 {
 	static int ticks = 0;
 
+
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
