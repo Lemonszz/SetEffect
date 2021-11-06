@@ -46,25 +46,13 @@ public class PlayerHandler
 	@SubscribeEvent
 	public static void onEntityHurt(LivingAttackEvent event)
 	{
-		if(event.getEntityLiving() instanceof PlayerEntity)
-		{
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			for(ArmorSet set : ArmorSets.sets)
-			{
-				if(set.isPlayerWearing(player))
+			for(ArmorSet set : ArmorSets.sets) {
+				if(set.isPlayerWearing(event.getEntityLiving()))
 				{
 					if(event.getSource().getDirectEntity() != null && event.getSource().getDirectEntity() instanceof LivingEntity)
 						set.applyAttackerEffect((LivingEntity) event.getSource().getDirectEntity());
 				}
 			}
-		}
-		else {
-			for (ArmorSet set : ArmorSets.sets){
-				if (set.isPlayerWearing(event.getEntityLiving())){
-					set.applyAttackerEffect((LivingEntity) event.getSource().getDirectEntity());
-				}
-			}
-		}
 	}
 
 	public static boolean hasGamestage(PlayerEntity player, List<String> gameStages)
