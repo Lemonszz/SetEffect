@@ -6,6 +6,8 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -25,7 +27,7 @@ import java.util.List;
  * Created by Sam on 20/06/2018.
  */
 @ZenRegister
-@ZenCodeType.Name("mods.seteffect.ArmorSet")
+@ZenCodeType.Name("mods.seteffect.ArmorSetEffect")
 public class ArmorSet
 {
 	private final Multimap<EquipmentSlotType, ItemStack> armor;
@@ -108,7 +110,11 @@ public class ArmorSet
 		effects.add(new ArmorEffectPotion(effect));
 		return this;
 	}
-
+	@ZenCodeType.Method
+	public ArmorSet addAttributeEffect(Attribute atr, AttributeModifier mod){
+		effects.add(new ArmorEffectAttributes(atr, mod));
+		return this;
+	}
 	@ZenCodeType.Method
 	public ArmorSet addAttackerEffect(EffectInstance effect)
 	{
@@ -150,14 +156,14 @@ public class ArmorSet
         return this;
     }
 
-	public boolean isPlayerWearing(PlayerEntity player)
+	public boolean isPlayerWearing(LivingEntity player)
 	{
 		return isPlayerWearing(player, strict);
 	}
 
-	private boolean isPlayerWearing(PlayerEntity player, boolean strict)
+	private boolean isPlayerWearing(LivingEntity player, boolean strict)
 	{
-		if(!PlayerHandler.hasGamestage(player, requiredStages))
+		if(player instanceof PlayerEntity && !PlayerHandler.hasGamestage((PlayerEntity) player, requiredStages))
 			return false;
 
 		for(EquipmentSlotType slot : armor.keySet())
@@ -265,10 +271,10 @@ public class ArmorSet
 		}
 	}
 
-	public void applyEffects(PlayerEntity player)
+	public void applyEffects(LivingEntity livingBase)
 	{
 
-		effects.forEach(e ->e.apply(player));
+		effects.forEach(e ->e.apply(livingBase));
 	}
 
 	public void applyAttackerEffect(LivingEntity livingBase)

@@ -5,6 +5,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import party.lemons.seteffect.armor.ArmorSet;
@@ -21,28 +23,28 @@ public class PlayerHandler
 
 
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
+	public static void onEntityTick(LivingEvent.LivingUpdateEvent event)
 	{
-		if(event.phase != TickEvent.Phase.END  || event.player.level.isClientSide || event.player == null || !event.player.isAlive() || event.player.isSpectator())
+		if(event.getEntityLiving().level.isClientSide || event.getEntityLiving() == null || !event.getEntityLiving().isAlive())
 			return;
 		ticks++;
-		if(ticks % 5 == 0)
+		if(ticks % 100 == 0)
 		{
 			ticks = 0;
 
 			for(ArmorSet set : ArmorSets.sets)
 			{
-				if(set.isPlayerWearing(event.player))
+				if(set.isPlayerWearing(event.getEntityLiving()))
 				{
 
-					set.applyEffects(event.player);
+					set.applyEffects(event.getEntityLiving());
 				}
 			}
 		}
 	}
 
 	@SubscribeEvent
-	public static void onPlayerHurt(LivingAttackEvent event)
+	public static void onEntityHurt(LivingAttackEvent event)
 	{
 		if(event.getEntityLiving() instanceof PlayerEntity)
 		{
@@ -53,6 +55,13 @@ public class PlayerHandler
 				{
 					if(event.getSource().getDirectEntity() != null && event.getSource().getDirectEntity() instanceof LivingEntity)
 						set.applyAttackerEffect((LivingEntity) event.getSource().getDirectEntity());
+				}
+			}
+		}
+		else {
+			for (ArmorSet set : ArmorSets.sets){
+				if (set.isPlayerWearing(event.getEntityLiving())){
+					set.applyAttackerEffect((LivingEntity) event.getSource().getDirectEntity());
 				}
 			}
 		}

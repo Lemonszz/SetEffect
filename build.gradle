@@ -64,12 +64,11 @@ repositories {
     }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.32'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
     implementation fg.deobf("curse.maven:crafttweaker-239197:3505715")
     implementation fg.deobf("curse.maven:game-stages-268655:3437962")
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([

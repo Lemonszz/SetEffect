@@ -28,6 +28,8 @@ Instance Methods:
 
 `MyArmorSet.addEffect(effect as MCPotionEffectInstance) as ArmorSet` -> Makes the player wearing the set receive that effect.
 
+`MyArmorSet.addAttributeEffect(attribute as Attribute, modifier as AttributeModifier) as ArmorSet` -> Adds the attribute to all armor pieces when worn.
+
 `MyArmorSet.addAttackerEffect(effect as MCPotionEffectInstance) as ArmorSet` -> Makes the entity that attacks the player wearing this set receive an effect.
 
 `MyArmorSet.register() as void  ` -> Registers our ArmorSet.
