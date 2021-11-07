@@ -67,6 +67,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
     implementation fg.deobf("curse.maven:crafttweaker-239197:3505715")
     implementation fg.deobf("curse.maven:game-stages-268655:3437962")
+    implementation fg.deobf("curse.maven:packmode-278398:3104411")
 }
 
 jar {

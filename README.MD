@@ -6,19 +6,20 @@ Package: `import mods.seteffect.ArmorSetEffect`
 
 Static Methods:
 
-`new ArmorSetEffect() as ArmorSetEffect` -> Creates a new ArmorSetEffect
+`new ArmorSetEffect(String name) as ArmorSetEffect` -> Creates a new ArmorSetEffect with the specified name. Standard name rules apply `[a-z0-9/._-]`.
 
 `ArmorSetEffect.dumpParticleNames() as void` -> Prints a list of particle names to the crafttweaker.log file.
 
 Instance Methods: 
 
-`MyArmorSetEffect.setName(name as string) as ArmorSetEffect` -> Sets the name of the ArmorSetEffect.
 
 `MyArmorSetEffect.inSlot(slot as MCEquipmentSlotType, item as IItemStack) as ArmorSetEffect` -> Checks for a certain [IItemStack](https://docs.blamejared.com/1.16/en/vanilla/api/items/IItemStack) in the specified [slot](https://docs.blamejared.com/1.16/en/vanilla/api/util/MCEquipmentSlotType).
 
 `MyArmorSetEffect.setIgnoreNBT() as ArmorSetEffect` -> Ignores NBT data for the specified Items in the ArmorSetEffect.
 
 `MyArmorSetEffect.requireGamestages(stages as string[]) as ArmorSetEffect` -> Adds the specified GameStages to the required GameStages list. Requires GameStagesAPI to be installed.
+
+`MyArmorSetEffect.setPackmode(packmode as string) as ArmorSetEffect` -> Makes the effect only happen in a certain packmode. 
 
 `MyArmorSetEffect.setStrict() as ArmorSetEffect` -> Sets the comparing type of the NBT to strict.
 
@@ -43,8 +44,7 @@ import mods.SetEffect.ArmorSetEffect;
 ArmorSetEffect.dumpParticleNames(); 
 //Can be commented out after getting the right name for what you want.
 
-val iron_set = new ArmorSetEffect()
-               .setName("example_set")
+val iron_set = new ArmorSetEffect("iron_set")
                .inSlot(<equipmentslottype:head>, <item:minecraft:iron_helmet>)
                .inSlot(<equipmentslottype:chest>, <item:minecraft:iron_chestplate>)
                .inSlot(<equipmentslottype:legs>, <item:minecraft:iron_leggings>)
@@ -58,7 +58,7 @@ iron_set.register();
 
 //You can also chain the register to remove the need for a variable.
 
- new ArmorSetEffect().setName("iron_set")
+ new ArmorSetEffect("iron_set")
                 .inSlot(<equipmentslottype:head>, <item:minecraft:iron_helmet>)
                .inSlot(<equipmentslottype:chest>, <item:minecraft:iron_chestplate>)
                .inSlot(<equipmentslottype:legs>, <item:minecraft:iron_leggings>)

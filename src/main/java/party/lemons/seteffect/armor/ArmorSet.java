@@ -36,11 +36,13 @@ public class ArmorSet
 
 	private final List<String> requiredStages;
 	private String name = "";
+	private String packmode;
 	private boolean strict, ignoreNBT;
 
 	@ZenCodeType.Constructor
-	public ArmorSet()
+	public ArmorSet(String name)
 	{
+		this.name = name;
 	    this.armor = ArrayListMultimap.create();
 		this.effects = new ArrayList<>();
 		this.attackerEffects = new ArrayList<>();
@@ -81,6 +83,11 @@ public class ArmorSet
 	@ZenCodeType.Method
 	public ArmorSet addParticleWithDefaultSpread(String particleName){
 			return addParticle(particleName, 1.0f, 1.0f, 1.0f, 3.0f, 3.0f, 3.0f, 0.2f, 0.2f, 0.2f, 0.6f, 0.6f, 0.6f, 5.0f, 5.0f, 1);
+	}
+
+	@ZenCodeType.Method
+	public String getPackmode(){
+		return packmode;
 	}
 
 	@ZenCodeType.Method
@@ -136,19 +143,18 @@ public class ArmorSet
 	}
 
 	@ZenCodeType.Method
-	public ArmorSet setName(String name)
-	{
-		this.name = name.replace(" ", "_");
-		return this;
-	}
-
-	@ZenCodeType.Method
 	public ArmorSet setStrict()
 	{
 		this.strict = true;
 		return this;
 	}
-
+	
+	@ZenCodeType.Method
+	public ArmorSet setPackmode(String pacmode){
+		this.packmode = packmode;
+		return this;
+	}
+	
 	@ZenCodeType.Method
     public ArmorSet setIgnoreNBT()
     {
@@ -163,7 +169,7 @@ public class ArmorSet
 
 	private boolean isPlayerWearing(LivingEntity player, boolean strict)
 	{
-		if(player instanceof PlayerEntity && !PlayerHandler.hasGamestage((PlayerEntity) player, requiredStages))
+		if(player instanceof PlayerEntity && !PlayerHandler.hasGamestage((PlayerEntity) player, requiredStages) && !PlayerHandler.correctPackmode(getPackmode()))
 			return false;
 
 		for(EquipmentSlotType slot : armor.keySet())

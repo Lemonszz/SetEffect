@@ -1,5 +1,6 @@
 package party.lemons.seteffect.handler;
 
+import com.teamacronymcoders.packmode.PackModeAPIImpl;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -60,6 +61,12 @@ public class PlayerHandler
 		if(ModList.get().isLoaded("gamestages") && !gameStages.isEmpty())
 		{
 			return GameStageHelper.hasAllOf(player, gameStages);
+		}
+		return true;
+	}
+	public static boolean correctPackmode(String packmode){
+		if (ModList.get().isLoaded("packmode")){
+			return PackModeAPIImpl.getInstance().getPackMode().equalsIgnoreCase(packmode);
 		}
 		return true;
 	}
