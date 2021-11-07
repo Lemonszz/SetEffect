@@ -65,7 +65,7 @@ public class PlayerHandler
 		return true;
 	}
 	public static boolean correctPackmode(String packmode){
-		if (ModList.get().isLoaded("packmode")){
+		if (ModList.get().isLoaded("packmode") && packmode != null){
 			return PackModeAPIImpl.getInstance().getPackMode().equalsIgnoreCase(packmode);
 		}
 		return true;
