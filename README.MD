@@ -1,17 +1,18 @@
-1.16 port of SetEffects
+#SetEffects
 
-Includes most methods from the original mod:
+1.16 port of SetEffects, a mod that gives some customisable effects to the entities that are wearing certain, crafttweaker customisable, armor sets.
+
+Includes most methods from the original mod: https://github.com/Lemonszz/SetEffect/
 
 Package: `import mods.seteffect.ArmorSetEffect`
 
-Static Methods:
+#Static Methods:
 
 `new ArmorSetEffect(String name) as ArmorSetEffect` -> Creates a new ArmorSetEffect with the specified name. Standard name rules apply `[a-z0-9/._-]`.
 
 `ArmorSetEffect.dumpParticleNames() as void` -> Prints a list of particle names to the crafttweaker.log file.
 
-Instance Methods: 
-
+#Instance Methods: 
 
 `MyArmorSetEffect.inSlot(slot as MCEquipmentSlotType, item as IItemStack) as ArmorSetEffect` -> Checks for a certain [IItemStack](https://docs.blamejared.com/1.16/en/vanilla/api/items/IItemStack) in the specified [slot](https://docs.blamejared.com/1.16/en/vanilla/api/util/MCEquipmentSlotType).
 
@@ -37,7 +38,7 @@ Instance Methods:
 
 
 
-Example Set:
+#Example Set:
 `````
 import mods.SetEffect.ArmorSetEffect;
 
